@@ -4,6 +4,7 @@
 
 The goal here is to make the computer read the label of a bottle of wine from a simple photo. Why is this complicated, you may ask? Well, first of all, we can't call directly an OCR (Optical Character Recognition) library like tesseract, because the text on the label is distorted on a cylinder and because of that, we can't extract correctly the characters and thus the words and sentences.
 
+To use this package on your machine you have to install the dependencies in the requirement.txt file or build and run the image 
 ## train model on images
 ```
 python main.py --train
