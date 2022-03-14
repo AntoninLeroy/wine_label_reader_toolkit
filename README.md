@@ -16,3 +16,6 @@ python main.py --read
 ```
 python main.py --train --read
 ```
+
+# Live demo online:
+https://plural.run/wineReader
