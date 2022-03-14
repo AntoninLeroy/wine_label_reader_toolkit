@@ -5,7 +5,7 @@ from wineReader.labelVision import *
 
 # run with argument
 # --train
-# --readLabel
+# --read
 
 f = open('Config.json')
 Config = json.load(f)
