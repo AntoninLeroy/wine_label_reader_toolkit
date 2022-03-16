@@ -251,7 +251,7 @@ class LabelUnwrapper(object):
         for row in mesh:
             for x, y in row:
                 point = (int(round(x)), int(round(y)))
-                cv2.line(self.src_image, point, point, color=color, thickness=ceil((self.width*self.height)/200000))
+                cv2.line(self.src_image, point, point, color=color, thickness=ceil(self.width*0.01))
 
     def draw_poly_mask(self, color=WHITE_COLOR):
         cv2.polylines(self.src_image, np.int32([self.points]), 1, color)
@@ -514,12 +514,12 @@ class labelVision:
                 Ye = i
                 break
 
-        mask = cv2.circle(mask, (Xf, Yf), radius=ceil((y_length*x_length)/200000), color=(0, 0, 255), thickness=-1)
-        mask = cv2.circle(mask, (Xc, Yc), radius=ceil((y_length*x_length)/200000), color=(0, 0, 255), thickness=-1)
-        mask = cv2.circle(mask, (Xd, Yd), radius=ceil((y_length*x_length)/200000), color=(0, 0, 255), thickness=-1)
-        mask = cv2.circle(mask, (Xa, Ya), radius=ceil((y_length*x_length)/200000), color=(0, 0, 255), thickness=-1)
-        mask = cv2.circle(mask, (Xb, Yb), radius=ceil((y_length*x_length)/200000), color=(0, 0, 255), thickness=-1)
-        mask = cv2.circle(mask, (Xe, Ye), radius=ceil((y_length*x_length)/200000), color=(0, 0, 255), thickness=-1)
+        mask = cv2.circle(mask, (Xf, Yf), radius=ceil(x_length*0.02), color=(255, 0, 0), thickness=-1)
+        mask = cv2.circle(mask, (Xc, Yc), radius=ceil(x_length*0.02), color=(255, 0, 0), thickness=-1)
+        mask = cv2.circle(mask, (Xd, Yd), radius=ceil(x_length*0.02), color=(255, 0, 0), thickness=-1)
+        mask = cv2.circle(mask, (Xa, Ya), radius=ceil(x_length*0.02), color=(255, 0, 0), thickness=-1)
+        mask = cv2.circle(mask, (Xb, Yb), radius=ceil(x_length*0.02), color=(255, 0, 0), thickness=-1)
+        mask = cv2.circle(mask, (Xe, Ye), radius=ceil(x_length*0.02), color=(255, 0, 0), thickness=-1)
 
         # convert points to ratio of height and width
 
@@ -556,7 +556,7 @@ class labelVision:
 
         dst_image = unwrapper.unwrap()
         for point in unwrapper.points:
-            cv2.line(unwrapper.src_image, tuple(point), tuple(point), color=RED_COLOR, thickness=int((src.shape[0]*src.shape[1])/200000))
+            cv2.line(unwrapper.src_image, tuple(point), tuple(point), color=RED_COLOR, thickness=ceil(src.shape[1]*0.04))
 
         unwrapper.draw_mesh()
 
@@ -579,19 +579,13 @@ class labelVision:
 
             save_img(self.Config['results_path'] + filename + "/3_resize_binary_mask.jpg", mask)
 
-            # gaussian blur
-            original_image = np.uint8(mask*255)
-            blur = cv2.GaussianBlur(original_image,(135,135),0)
-            thresh = cv2.threshold(blur, 100, 255, cv2.THRESH_BINARY)[1]
-
-            save_img(self.Config['results_path'] + filename + "/3_5_gaussian_blur.jpg", thresh)
-
             # rotate
-            r_src, r_mask = self.align_vertically(src, thresh)
+            r_src, r_mask = self.align_vertically(src, mask)
             save_img(self.Config['results_path'] + filename + "/4_rotate_mask.jpg", r_mask)
             save_img(self.Config['results_path'] + filename + "/5_rotate_src.jpg", r_src)
 
             # search cylindric edges points in label structure
+            r_mask = np.uint8(r_mask*255)
             shape, img_point = self.getCylinderPoints(r_mask)
             save_img(self.Config['results_path'] + filename + "/6_points.jpg", img_point)
 
